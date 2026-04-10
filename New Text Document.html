@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Miku Project - Fixed & Final</title>
+    <style>
+        :root {
+            --main-color: #2c2740; 
+            --glow-color: #4a426b;
+            --text-white: #ffffff;
+            --logic-color: #ffb3b3; 
+            --emotion-color: #b3d9ff; 
+        }
+
+        body {
+            background-color: black;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: url('Normal.PNG'), auto;
+        }
+
+        * { cursor: url('Normal.PNG'), auto !important; }
+
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .sphere {
+            width: 20px; height: 20px;
+            background-color: white; border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            animation: breathe 3s ease-in-out infinite;
+            margin-bottom: 25px;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.4); opacity: 1; }
+        }
+
+        .start-text { color: white; font-size: 18px; font-weight: bold; }
+
+        #game-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .media-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            min-height: 300px;
+        }
+
+        .character-img {
+            max-width: 85%;
+            max-height: 55vh;
+            object-fit: contain;
+            display: block;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .audio-player {
+            width: 300px;
+            background: var(--main-color);
+            border: 1px solid var(--glow-color);
+            padding: 20px;
+            border-radius: 15px;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fade-in-media {
+            animation: mediaAppearance 0.8s ease-out forwards;
+        }
+
+        @keyframes mediaAppearance {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dialogue-box {
+            background-color: rgba(15, 15, 25, 0.9);
+            border: 1.5px solid var(--main-color);
+            padding: 20px;
+            width: 85%;
+            max-width: 700px; 
+            color: var(--text-white);
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            direction: rtl;
+            line-height: 1.7;
+            white-space: pre-line;
+            min-height: 40px;
+            display: none;
+        }
+
+        .logic-text { color: var(--logic-color); font-weight: bold; }
+        .emotion-text { color: var(--emotion-color); font-weight: bold; }
+
+        .choice-btn {
+            background-color: var(--main-color);
+            color: var(--text-white);
+            border: 1px solid var(--glow-color);
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            display: none;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-8px) scale(1.06);
+            background-color: #3d355a;
+            box-shadow: 0 10px 20px rgba(74, 66, 107, 0.6);
+            border-color: #7a6ab3;
+        }
+
+        .btn-show {
+            display: block !important;
+            animation: btnFade 0.4s forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes btnFade { to { opacity: 1; } }
+
+        .heart {
+            position: absolute; color: #ff0000; font-size: 15px;
+            pointer-events: none; animation: flyUp 1.5s ease-out forwards;
+        }
+        @keyframes flyUp {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), -100px) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="createHearts(event)">
+
+    <div id="start-screen" onclick="startGame()">
+        <div class="sphere"></div>
+        <div class="start-text">انتي هيتي ؟</div>
+    </div>
+
+    <div id="game-container">
+        <div class="media-container" id="media-box"></div>
+        <div class="dialogue-box" id="text-box"></div>
+        <div id="buttons-container">
+            <button class="choice-btn" id="btn-1" onclick="nextDialogue(1)">وين لوني المفضل🤧؟</button>
+            <button class="choice-btn" id="btn-2" onclick="nextDialogue(2)">وانا عملت لك اظافه عشان برنامج كريتا صح تذكرت</button>
+            <button class="choice-btn" id="btn-3" onclick="nextDialogue(3)">هيهيهيههيه انا كنت صاحبت الفكره😝😝</button>
+            <button class="choice-btn" id="btn-4" onclick="nextDialogue(4)">ايوااا اتذكر وانت وقتها جبت العيد وقلت احبك وحذفتها وهزاتك😝👌</button>
+            <button class="choice-btn" id="btn-5" onclick="nextDialogue(5)">اتفق وربي لدرجه كنت ما اعرف اعبر</button>
+            <button class="choice-btn" id="btn-6" onclick="nextDialogue(6)">احسن يوم فحياتي ❤️🤧🥹</button>
+            <button class="choice-btn" id="btn-7" onclick="nextDialogue(7)">لا تخاف اخي الصغير 🥹❤️</button>
+            <button class="choice-btn" id="btn-8" onclick="nextDialogue(8)">وانا بعد احبك اخي لكن سؤال انت تبي تتزوجني ؟؟</button>
+            <button class="choice-btn" id="btn-9" onclick="nextDialogue(9)">امم اخي فاهماك انا ما عليك بنحل المشكله سويه ❤️🩷</button>
+            <button class="choice-btn" id="btn-10" onclick="nextDialogue(10)"> شكرا اخي هاذه يلي كنت احتاجه منك 🤧🩷 </button>
+            <button class="choice-btn" id="btn-11" onclick="nextDialogue(11)">" شكرا كثير لك اخي ان شاء الله ما تنعاد "</button>
+            <button class="choice-btn" id="btn-12" onclick="nextDialogue(12)"> " اضغطي علي " </button>
+            <button class="choice-btn" id="btn-final-end" onclick="finish(13)">نهاية اللعبة</button>
+        </div>
+    </div>
+
+    <script>
+        let index = 0;
+        let currentStep = 0;
+        let typeTimeout;
+
+        const dialogues = [
+            { type: "img", src: "1.jpg", text: "الاسم أبرار، اللقب هيتي 🌸 مواليد 2010/1/23. أختي الكبيرة مؤدية أصوات ورسامة ولاعبة شطرنج ونصف يوتيوبر 🎙️🎨♟️.. رغم تعبها ومجاهدتها في الحياة، إلا أنها لم تستسلم أبداً وأنا هنا لأدعمها دائماً. استمري يا حياتي! ❤️💪", btnId: "btn-1" },
+            { type: "img", src: "2.jpg", text: "عيد ميلاد صداقتنه 2024 شهر 4 يوم 24 🎂 مكان تعارفنه هو سيرفر اونكس والمكان يلي خلانا نعمل لنفسنا فولو هو سيرفر بنت ثانية ✨", btnId: "btn-2" },
+            { type: "img", src: "3.jpg", text: "بدايت سوالفنا كنا نسولف يوم واحد بالساعات وبعدها نسحب 20 يوم وهكذا وبنفس الفتره صرتي اختي الكبيرة وانا اخوك الصغير وفتحت لنا المجال للتعارف 🫂✨", btnId: "btn-3" },
+            { type: "img", src: "4.jpg", text: "أول أحبك قلتها بالغلط وأول أحبك حقيقية بيننا.. وقتها كنا نخجل من دي الكلمة وقلتها أنا وبعدها إنتي.. 💌", btnId: "btn-4" },
+            { type: "img", src: "5.jpg", text: "مرة حبينا بعض.. نتكلم ونمدح ونتغزل، نوصل لدرجات الدوبامين يصير يجري بالجسم بدال الدم! كنا أعز أصحاب، اثنين ما يقدر يكسرهم شي.. 🧠❤️✨", btnId: "btn-5" },
+            { type: "audio", src: "MY LIFE.mp3", text: "أحسن يوم بعلاقتنا بالنسبة لي كنت أبكي وزعلان من هموم الدنيا ومشقاتها.. رجعت ليك وقتها كنتي الملجئ الآمن لي.. حسيت كأني الطفل الصغير يلي بكى ولما شاف أمه ارتاح.. وتطمن قلبي إن في شخص يفكر فيني ويحبني. 16 سنة عشت حياتي، دا هو أحسن يوم فيها. 🤍🩹", btnId: "btn-6" },
+            { type: "img", src: "6.jpg", text: "همم هيتي هاذي ثالث مرة تسحبي وكذا تبعتي نقطة وتروحي ترا والله إني أخاف أخسرك.. 🥀🥺", btnId: "btn-7" },
+            { type: "none", text: "أُحِبُّكِ، هَيْتِي لِحَيَاتِي، أَنْ تَسْوَىٰ بِسُوءٍ مِنْ دُونِكِ أُحِبُّكِ، أَوَدُّ أَنْ أَرَىٰ مَاسْتِي كُلَّ يَوْمٍ أُحِبُّكِ، أَوَدُّ أَنْ أُبْرِئَ سَقَمِي مِنْ أَجْلِكِ، وَأَنْ أَكُونَ مَنْ يَجْعَلُكِ سَعِيدَةً أُحِبُّكِ، مَا الْعَمَلُ الَّذِي عَمِلْتُهُ وَكُنْتِ أَنْتِ جَزَاتَهُ؟ أُحِبُّكِ، مَا رَأَيْتُهُ مِنْ حَيَاتِي جَلَا فَقَطْ بِرُؤْيَاكِ أُحِبُّكِ، لَا أَوَدُّ تَرْكَكِ يَا مَعْشُوقَتِي.", btnId: "btn-8" },
+            { 
+                type: "special", 
+                text: [
+                    {who: "logic", txt: "الجزء العقلاني : هاع هيهيهي دا السؤال انسال قبل قول لها لا وبالاضافه انت تعرف انها تحب شخص تاني لا تخليها بدا الموقف وبالاضافه ما نلحق نترك ليان نجي لبنت ثانيه قول لها لا وبس\n\n"},
+                    {who: "emotion", txt: "الجزء العاطفي : ها لا لا لا تقول كذا خليك محايد وقول تقريبا وايوا ونص نص احسن\n\n"},
+                    {who: "logic", txt: "الجزء العقلاني : هههه شو دا الغباء تخيل يقول كذا لا مره بتجيب العيد وبتخطو على قواعدك يلي خليتها لنفسك\n\n"},
+                    {who: "me", txt: "أنا : يب ...💔💔\n\n"},
+                    {who: "logic", txt: "الجزء العقلاني : ها ؟ ها !! شو ساويت ولك\n\n"},
+                    {who: "emotion", txt: "الجزء العاطفي : اصلا هو انسان عاطفي طبيعي تجره العاطفه مش بالعقل\n\n"},
+                    {who: "logic", txt: "الجزء العقلاني : باتقاعد خلي العاطفه تفيدك"}
+                ], 
+                btnId: "btn-9" 
+            },
+            { 
+                type: "img", 
+                src: "7.jpg", 
+                text: "عم تتصرفي بغرابه وبشكل بعمري ما شفته فيك.. باعطيك مساحتك الشخصيه اختي الكبيرة 🩷❤️", 
+                btnId: "btn-10" 
+            },{ 
+    type: "img", 
+    src: "8.jpg", 
+    text: "أنا: كيف ما اسامحك اختي؟ اكيد بسامحك.. باعطيك نص عمري اذا تبين، تستاهلين كل خير 🩷", 
+    btnId: "btn-11" 
+},{ 
+    type: "none", 
+    text: "اهخخ ما صرت اتعب ولكن كل مره زعل بكاء مستمر تعب تعرفي شعوري لما اشوف شي حلو ويجيني حماس اجي ادخل ديسكورد عشان اقوله ليك وما اللاقيك موجوده تعرفي كميت التعب يلي تعبته دائما اسامحك دائما اخلي العلاقه دي بيدك انتي تنهيها انتي تبدينها اسف على كلامي بس هاذي التجربه يلي عشتيها كلها كانت عباره عن نظرتي لدي العلاقه ما خفي اعظم ما ابي اعاتبك ولكن كسرتي خاطري ونفسي اتمنه يكون عندك سبب انك تعملي معي كذا عشان اقوله لنفسي وما اجلس ازعل وابكي بدون سبب ... 💔💔", 
+    btnId: "btn-12" 
+},{ 
+    type: "audio", 
+    src: "d-HHuVrbPl8.m4a", 
+    text: "الاغنيه المفضله لدى هيتي 🎵✨", 
+    btnId: "btn-final-end" 
+}
+        ];
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'flex';
+            loadStep(0);
+        }
+
+        function loadStep(num) {
+            currentStep = num;
+            const current = dialogues[num];
+            const mediaBox = document.getElementById('media-box');
+            const textBox = document.getElementById('text-box');
+            
+            clearTimeout(typeTimeout);
+            mediaBox.innerHTML = "";
+            textBox.innerHTML = "";
+            textBox.style.display = "block";
+            mediaBox.style.display = "flex";
+            index = 0;
+
+            if (current.type === "img") {
+                const img = document.createElement('img');
+                img.src = current.src; 
+                img.className = 'character-img fade-in-media';
+                mediaBox.appendChild(img);
+            } else if (current.type === "audio") {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'audio-player fade-in-media';
+                playerDiv.innerHTML = `<audio controls><source src="${current.src}" type="audio/mpeg"></audio>`;
+                mediaBox.appendChild(playerDiv);
+            } else if (current.type === "none" || current.type === "special") {
+                mediaBox.style.display = "none";
+            }
+
+            if (current.type === "special") {
+                typeSpecial(current.text, current.btnId, 0, 0);
+            } else {
+                typeWriter(current.text, current.btnId, 25);
+            }
+        }
+
+        function typeWriter(text, btnId, speed) {
+            if (index < text.length) {
+                document.getElementById("text-box").innerHTML += text.charAt(index);
+                index++;
+                typeTimeout = setTimeout(() => typeWriter(text, btnId, speed), speed);
+            } else {
+                document.getElementById(btnId).classList.add('btn-show');
+            }
+        }
+
+        function typeSpecial(parts, btnId, partIdx, charIdx) {
+            if (partIdx < parts.length) {
+                const currentPart = parts[partIdx];
+                if (charIdx === 0) {
+                    const span = document.createElement('span');
+                    span.className = currentPart.who + "-text";
+                    span.id = "part-" + partIdx;
+                    document.getElementById("text-box").appendChild(span);
+                }
+                document.getElementById("part-" + partIdx).innerHTML += currentPart.txt.charAt(charIdx);
+                
+                if (charIdx < currentPart.txt.length - 1) {
+                    typeTimeout = setTimeout(() => typeSpecial(parts, btnId, partIdx, charIdx + 1), 10);
+                } else {
+                    typeSpecial(parts, btnId, partIdx + 1, 0);
+                }
+            } else {
+                document.getElementById(btnId).classList.add('btn-show');
+            }
+        }
+
+        function nextDialogue(num) {
+            document.querySelectorAll('.choice-btn').forEach(b => {
+                b.style.display = 'none';
+                b.classList.remove('btn-show');
+            });
+            loadStep(num);
+        }
+
+        function finish() { alert("تمت النهاية بنجاح! شكراً لكِ هيتي ❤️"); }
+
+        function createHearts(e) {
+            const heartCount = 6;
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️'; heart.className = 'heart';
+                heart.style.left = (e.clientX - 5) + 'px';
+                heart.style.top = (e.clientY - 5) + 'px';
+                const randomX = (Math.random() - 0.5) * 100;
+                heart.style.setProperty('--x', randomX + 'px');
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1500);
+            }
+        }
+
+        // خاصية المطور الآمنة داخل الـ script
+        window.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'h') {
+                const currentBtnId = dialogues[currentStep].btnId;
+                const currentBtn = document.getElementById(currentBtnId);
+                if (currentBtn) {
+                    currentBtn.style.display = 'none';
+                    currentBtn.classList.remove('btn-show');
+                }
+                if (currentStep < dialogues.length - 1) {
+                    loadStep(currentStep + 1);
+                } else {
+                    finish();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
